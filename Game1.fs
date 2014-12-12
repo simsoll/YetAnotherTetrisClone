@@ -3,7 +3,7 @@
 open Microsoft.Xna.Framework
 open Microsoft.Xna.Framework.Graphics
 
-open Level
+open LevelManager
 open Player
 
 type Game1 () as this =
@@ -16,10 +16,21 @@ type Game1 () as this =
 
     do graphics.PreferredBackBufferWidth <- 520
     do graphics.PreferredBackBufferHeight <- 520
+                 
+    let level = 
+        {
+            Position = new Vector2(5.0f, 5.0f)
+            Width = 30
+            Height = 50
+            TileSize = 8
+            WallColor = Color.Gray
+            Tiles = []
+            Difficulty = 0
+        }
+        |> addWalls
+
+    let player = Player.spawn Vector2.Zero
                        
-    let drawWall spritebatch _ =
-        Level.draw spritebatch texture
-    
     override this.Initialize() =       
         this.IsMouseVisible <- true
 
@@ -38,13 +49,14 @@ type Game1 () as this =
 
         do base.Update (gameTime)
         ()
- 
-    override this.Draw (gameTime) =
+    override this.Draw (gameTime) = 
+
         do this.GraphicsDevice.Clear Color.LightGray
 
         spriteBatch.Begin()
 
-        drawWall spriteBatch gameTime
+        LevelManager.draw spriteBatch texture level
+        Player.draw spriteBatch texture level.TileSize player
 
         spriteBatch.End()
 

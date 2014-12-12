@@ -60,9 +60,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommonTypes\CommonTypes.fs" />
+    <Compile Include="Common\Types.fs" />
     <Compile Include="Player.fs" />
-    <Compile Include="Level.fs" />
+    <Compile Include="LevelManager.fs" />
     <Compile Include="Game1.fs" />
     <Compile Include="Program.fs" />
     <None Include="App.config" />

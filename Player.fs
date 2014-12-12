@@ -4,21 +4,22 @@ open System
 open Microsoft.Xna.Framework
 open Microsoft.Xna.Framework.Graphics
 
-open YetAnotherTetrisClone.CommonTypes
+open YetAnotherTetrisClone.Common.Types
 
-module Player =
-    type Direction =
-        | Up
-        | Down
-        | Left
-        | Right
+type Direction =
+    | Up
+    | Down
+    | Left
+    | Right
 
-    type Figur =
-        {
-            Position: Vector2
-            Facing: Direction
-            DirectionToTileMap: (Direction * TileMap) list
-        }    
+type Figur =
+    {
+        Position: Vector2
+        Facing: Direction
+        DirectionToTilesMap: Map<Direction, Tile list>
+    } 
+
+module Player =   
 
     let randomFigur =
         let random = Random()
@@ -27,35 +28,35 @@ module Player =
     let figurs = [ {
                      Position = Vector2.Zero
                      Facing = Up 
-                     DirectionToTileMap = [ 
+                     DirectionToTilesMap = Map [ 
                                             (Up, 
                                                  [
-                                                    Tile.create 1 2 Color.Blue
-                                                    Tile.create 2 1 Color.Blue
-                                                    Tile.create 2 2 Color.Blue
-                                                    Tile.create 3 2 Color.Blue
-                                                 ])
+                                                            Tile.create 1 2 Color.Blue
+                                                            Tile.create 2 1 Color.Blue
+                                                            Tile.create 2 2 Color.Blue
+                                                            Tile.create 3 2 Color.Blue
+                                                          ])
                                             (Down, 
                                                  [
-                                                    Tile.create 1 1 Color.Blue
-                                                    Tile.create 2 1 Color.Blue
-                                                    Tile.create 2 2 Color.Blue
-                                                    Tile.create 3 1 Color.Blue
-                                                 ])
+                                                            Tile.create 1 1 Color.Blue
+                                                            Tile.create 2 1 Color.Blue
+                                                            Tile.create 2 2 Color.Blue
+                                                            Tile.create 3 1 Color.Blue
+                                                          ])
                                             (Left, 
                                                  [
-                                                    Tile.create 2 1 Color.Blue
-                                                    Tile.create 1 2 Color.Blue
-                                                    Tile.create 2 2 Color.Blue
-                                                    Tile.create 2 3 Color.Blue
-                                                 ])
+                                                            Tile.create 2 1 Color.Blue
+                                                            Tile.create 1 2 Color.Blue
+                                                            Tile.create 2 2 Color.Blue
+                                                            Tile.create 2 3 Color.Blue
+                                                          ])
                                             (Right, 
                                                  [
-                                                    Tile.create 1 1 Color.Blue
-                                                    Tile.create 1 2 Color.Blue
-                                                    Tile.create 2 2 Color.Blue
-                                                    Tile.create 1 3 Color.Blue
-                                                 ])
+                                                            Tile.create 1 1 Color.Blue
+                                                            Tile.create 1 2 Color.Blue
+                                                            Tile.create 2 2 Color.Blue
+                                                            Tile.create 1 3 Color.Blue
+                                                          ])
                                           ]
                    } ]
                    
@@ -81,5 +82,13 @@ module Player =
                         | Right -> Up
         {figur with Facing = newFacing}
 
-    //collision detection should be kept elsewhere 
-    //as the player should not know about other stuff
+    let draw         
+        (spriteBatch:SpriteBatch) 
+        (texture:Texture2D)
+        (tileSize:int) 
+        (figur:Figur) =
+        figur.DirectionToTilesMap 
+        |> Map.find figur.Facing
+        |> List.map (fun tile -> tile.addPosition figur.Position)
+        |> List.iter (fun tile -> tile.draw spriteBatch texture tileSize)
+        ()

@@ -2,6 +2,7 @@
  
 open Microsoft.Xna.Framework
 open Microsoft.Xna.Framework.Graphics
+open Microsoft.Xna.Framework.Input
 
 open LevelManager
 open Player
@@ -29,7 +30,7 @@ type Game1 () as this =
         }
         |> addWalls
 
-    let player = Player.spawn Vector2.Zero
+    let mutable player = Player.spawn Vector2.Zero
                        
     override this.Initialize() =       
         this.IsMouseVisible <- true
@@ -46,6 +47,10 @@ type Game1 () as this =
         ()
  
     override this.Update (gameTime) =
+        
+        player <- Keyboard.GetState()
+                  |> InputManager.movements
+                  |> Player.applyMovements player
 
         do base.Update (gameTime)
         ()

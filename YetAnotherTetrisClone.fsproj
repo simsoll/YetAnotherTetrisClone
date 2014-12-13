@@ -63,6 +63,7 @@
     <Compile Include="Common\Types.fs" />
     <Compile Include="Player.fs" />
     <Compile Include="LevelManager.fs" />
+    <Compile Include="InputManager.fs" />
     <Compile Include="Game1.fs" />
     <Compile Include="Program.fs" />
     <None Include="App.config" />

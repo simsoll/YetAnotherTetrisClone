@@ -6,6 +6,12 @@ open Microsoft.Xna.Framework.Graphics
 
 open YetAnotherTetrisClone.Common.Types
 
+type Movement =
+    | Left
+    | Right
+    | Down
+    | Rotate
+
 type Direction =
     | Up
     | Down
@@ -64,23 +70,34 @@ module Player =
         let figur = randomFigur figurs
         {figur with Position = atPosition}
 
-    let move figur direction =
-        let deltaPosition = match direction with
-                            | Up -> Vector2.Zero
-                            | Left -> new Vector2(-1.0f, 0.0f)
-                            | Down -> new Vector2(1.0f, 0.0f)
-                            | Right -> new Vector2(1.0f, 0.0f)
+    let applyMovement figur movement =    
+        let deltaPosition = match movement with
+                            | Movement.Left -> new Vector2(-1.0f, 0.0f)
+                            | Movement.Down -> new Vector2(0.0f, 1.0f)
+                            | Movement.Right -> new Vector2(1.0f, 0.0f)
+                            | _ -> Vector2.Zero
         let newPosition = figur.Position + deltaPosition
         {figur with Position = newPosition}
         
 
-    let rotate figur =
+    let applyRotation figur =
         let newFacing = match figur.Facing with
                         | Up -> Left
                         | Left -> Down
                         | Down -> Right
                         | Right -> Up
         {figur with Facing = newFacing}
+
+    let applyMovements (figur:Figur) (movements: Movement list) =
+
+        let rec applyMovementsRec (figur:Figur) (movements:Movement list) =
+            match movements with
+            | [] -> figur
+            | head::tail -> let figur = if head.Equals(Movement.Rotate) then applyRotation figur
+                                        else applyMovement figur head
+                            applyMovementsRec figur tail
+        
+        applyMovementsRec figur movements
 
     let draw         
         (spriteBatch:SpriteBatch) 
